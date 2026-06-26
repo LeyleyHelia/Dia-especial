@@ -2,230 +2,200 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Especial ❤️</title>
+<title>Seja sincero, bonitão</title>
 
 <style>
 body {
-  margin: 0;
-  background: black;
-  color: #00ff9d;
-  font-family: monospace;
-  overflow: hidden;
+  font-family: Arial, sans-serif;
   text-align: center;
+  margin-top: 100px;
+  background-color: #ffe6f0;
+  overflow: hidden;
 }
 
-.center {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  flex-direction:column;
-}
-
-.box {
-  border:2px solid #00ff9d;
-  padding:20px;
-  width:340px;
-  border-radius:10px;
-  background: rgba(0,0,0,0.8);
-}
-
-/* shake só no hack */
-.shake {
-  animation: shake 0.1s infinite;
-}
-
-@keyframes shake {
-  0% { transform: translate(1px,1px); }
-  25% { transform: translate(-2px,1px); }
-  50% { transform: translate(2px,-1px); }
-  75% { transform: translate(-1px,2px); }
-  100% { transform: translate(0,0); }
-}
+h1 { color: #992e51; }
 
 button {
-  margin:10px;
-  padding:10px 20px;
-  background:black;
-  color:#00ff9d;
-  border:1px solid #00ff9d;
-  cursor:pointer;
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
 }
 
-button:hover {
-  background:#00ff9d;
-  color:black;
+#sim { background-color: #4CAF50; color: white; }
+#nao { background-color: #f44336; color: white; }
+
+img {
+  margin-top: 20px;
+  max-width: 300px;
+  border-radius: 10px;
 }
 
-.hidden { display:none; }
-
-.bar {
-  width:300px;
-  height:20px;
-  border:1px solid #00ff9d;
-  margin:10px auto;
+.neon {
+  animation: neon 0.8s infinite alternate;
+  box-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88;
 }
 
-.fill {
-  height:100%;
-  width:0%;
-  background:#00ff9d;
-}
-
-/* CARTA */
-.card {
-  transform: scale(0);
-  transition: 0.6s ease;
-}
-
-.card.open {
-  transform: scale(1);
-}
-
-/* MEME */
-.meme {
-  width:260px;
-  margin-top:10px;
-  border:2px solid #00ff9d;
-}
-
-/* corações */
-.heart {
-  position:absolute;
-  font-size:24px;
-  animation: pop 2s linear forwards;
-}
-
-@keyframes pop {
-  0% { transform: scale(0); opacity:1; }
-  50% { transform: scale(2); }
-  100% { transform: translateY(-200px) scale(0); opacity:0; }
+@keyframes neon {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
 }
 </style>
 </head>
 
 <body>
 
-<iframe id="music" class="hidden"></iframe>
+<h1 id="pergunta">Você está com saudade de mim?🥺</h1>
 
-<!-- TELA 1 -->
-<div id="tela1" class="center">
-  <div class="box">
-    ╔══════════════════════╗<br>
-    Sabe que dia é hoje?<br>
-    ╚══════════════════════╝
-    <br><br>
+<button id="sim">Sim</button>
+<button id="nao">Não</button>
 
-    <button onclick="start()">Sim</button>
-    <button onclick="start()">Não</button>
-  </div>
+<div id="resultado"></div>
+
+<!-- SOUND -->
+<div id="audioUnlock"
+onclick="unlockAudio()"
+style="
+position:fixed;
+top:10px;
+right:10px;
+width:42px;
+height:42px;
+background:#111;
+color:#fff;
+display:flex;
+justify-content:center;
+align-items:center;
+border-radius:8px;
+cursor:pointer;
+z-index:9999;
+">
+🔊
 </div>
 
-<!-- LOADING -->
-<div id="tela2" class="center hidden">
-  <div class="box">
-Inicializando sistema...
+<iframe
+id="music"
+width="1"
+height="1"
+style="opacity:0.01;position:absolute;bottom:0;"
+allow="autoplay"
+src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/djsantozz/valesca-popozuda-mousik-pagodin-deejay-santoz-igor-guimaraes-ragga-mix&auto_play=false">
+</iframe>
 
-<div class="bar"><div id="fill" class="fill"></div></div>
-
-✓ Conectando...<br>
-✓ Verificando calendário...<br>
-✓ Buscando aniversariante...<br>
-  </div>
-</div>
-
-<!-- RESULTADO + MEME -->
-<div id="tela3" class="center hidden">
-  <div class="box">
-Aniversariante localizado.<br><br>
-
-Nome........ João Vittor<br>
-Status....... ❤️ OK<br>
-  </div>
-
-  <img class="meme"
-  src="https://i.imgflip.com/1bij.jpg">
-
-  <br>
-  <button onclick="openCard()">Abrir mensagem</button>
-</div>
-
-<!-- CARTA FINAL -->
-<div id="tela4" class="center hidden">
-  <div class="box card" id="card" onclick="explodeHearts()">
-
-Parabéns pelo seu dia, meu bem. ❤️
-
-Eu sei que você não é de comemorar aniversário, mas espero que consiga aproveitar o máximo possível o dia de hoje, do seu jeito.
-
-Que muitos dos seus sonhos se realizem...
-
-E acima de tudo, quero que você saiba que eu estou aqui com você.
-
-Te amo, bonitão. ❤️
-
-  </div>
-</div>
+<script src="https://w.soundcloud.com/player/api.js"></script>
 
 <script>
+let widget;
+let audioUnlocked = false;
 
-function start(){
-  document.getElementById("tela1").classList.add("hidden");
-  document.getElementById("tela2").classList.remove("hidden");
+let tentativas = 0;
+let tamanhoSim = 18;
+let modoConfirmacao = false;
 
-  // música
-  document.getElementById("music").src =
-  "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/djcharmozinha-1/parabens-pra-voce-funk-remix&auto_play=true";
+const botaoSim = document.getElementById("sim");
+const botaoNao = document.getElementById("nao");
 
-  let bar = document.getElementById("fill");
-  let p = 0;
+function unlockAudio(){
+  if(audioUnlocked) return;
+  audioUnlocked = true;
+  widget = SC.Widget(document.getElementById("music"));
+  widget.load(
+    "https://soundcloud.com/djsantozz/valesca-popozuda-mousik-pagodin-deejay-santoz-igor-guimaraes-ragga-mix",
+    { auto_play: false }
+  );
+}
 
-  let i = setInterval(()=>{
-    p += 2;
-    bar.style.width = p+"%";
+function tocarMusica(){
+  if(audioUnlocked && widget){
+    widget.play();
+  }
+}
 
-    if(p >= 100){
-      clearInterval(i);
+  botaoSim.addEventListener("click", () => {
 
-      document.body.classList.add("shake");
+  if(!modoConfirmacao){
 
-      setTimeout(()=>{
-        document.getElementById("tela2").classList.add("hidden");
-        document.getElementById("tela3").classList.remove("hidden");
-      },800);
+    modoConfirmacao = true;
+    document.getElementById("pergunta").innerText = "Tem certeza? 😏";
+
+    botaoNao.style.position = "absolute";
+    botaoNao.onmouseover = fugir;
+    botaoNao.ontouchstart = fugir;
+
+    tocarMusica();
+
+  } else {
+    respostaSim();
+  }
+
+  crescerSim();
+});
+
+botaoNao.addEventListener("click", () => {
+
+  if(!modoConfirmacao){
+
+    modoConfirmacao = true;
+
+    document.getElementById("pergunta").innerText = "Papo de vacilo, tente novamente 😒";
+
+    botaoSim.classList.add("neon");
+
+  } else {
+
+    tentativas++;
+
+    if(tentativas === 1){
+      document.getElementById("pergunta").innerText = "Tá tentando mesmo? 👀";
+      return;
     }
 
-  },80);
-}
-
-/* abre carta */
-function openCard(){
-  document.getElementById("tela3").classList.add("hidden");
-  document.getElementById("tela4").classList.remove("hidden");
-
-  let card = document.getElementById("card");
-
-  setTimeout(()=>{
-    card.classList.add("open"); // desdobra carta
-    document.body.classList.remove("shake"); // PARA TREMOR AQUI
-  },200);
-}
-
-/* explosão de corações */
-function explodeHearts(){
-  for(let i=0;i<40;i++){
-    setTimeout(()=>{
-      let h = document.createElement("div");
-      h.className="heart";
-      h.innerHTML="💖";
-      h.style.left=Math.random()*window.innerWidth+"px";
-      h.style.top=Math.random()*window.innerHeight+"px";
-      document.body.appendChild(h);
-
-      setTimeout(()=>h.remove(),2000);
-    }, i*80);
+    document.getElementById("resultado").innerHTML = `
+      <p>😑</p>
+      <img src="https://i.pinimg.com/236x/2f/c5/42/2fc5429cc937124e13e1b4ff059bc1c5.jpg">
+    `;
   }
+
+  crescerSim();
+});
+
+function fugir(){
+
+  tentativas++;
+
+  const largura = window.innerWidth - 100;
+  const altura = window.innerHeight - 100;
+
+  botaoNao.style.left = Math.random() * largura + "px";
+  botaoNao.style.top = Math.random() * altura + "px";
+
+  tamanhoSim += 5;
+  botaoSim.style.fontSize = tamanhoSim + "px";
+
+  const pergunta = document.getElementById("pergunta");
+
+  if(tentativas === 1) pergunta.innerText = "Tem certeza mesmo? 😏";
+  else if(tentativas === 2) pergunta.innerText = "Sério isso?? 😒";
+  else if(tentativas === 3) pergunta.innerText = "Última chance... 👀";
+  else pergunta.innerText = "Para de tentar clicar no NÃO 😂";
+}
+
+function crescerSim(){
+  tamanhoSim += 5;
+  botaoSim.style.fontSize = tamanhoSim + "px";
+}
+
+  function respostaSim(){
+
+  document.getElementById("resultado").innerHTML = `
+    <p>Pois mostre a pica agora 💖</p>
+    <img src="https://www.cantadascasa.com/images/lines/limao-cantadas-j-chupei-limo-j-chupei-ameixa-s-no-chupei-voc-porq.jpg">
+    <br><br>
+    <button onclick="tocarMusica()">Tocar música 💖</button>
+  `;
 }
 
 </script>
